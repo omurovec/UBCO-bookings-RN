@@ -45,4 +45,6 @@ target 'UBCOBookings' do
   use_unimodules!
   pod 'RNKeychain', :path => '../node_modules/react-native-keychain'
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
 end

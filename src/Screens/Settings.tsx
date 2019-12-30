@@ -4,9 +4,9 @@ import {
 	TouchableOpacity,
 	Text,
 	Image,
-	TextInput,
-	AsyncStorage
+	TextInput
 } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 import Styles from "../styles";
 import * as Keychain from "react-native-keychain";
 import httpsFunction from "../Functions";

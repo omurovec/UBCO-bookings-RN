@@ -4,9 +4,9 @@ import {
 	Image,
 	Text,
 	TextInput,
-	AsyncStorage,
 	Alert
 } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 import Styles from "../styles";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import httpsFunction from "../Functions";

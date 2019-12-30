@@ -4,7 +4,7 @@ import {
 	StackActions,
 	NavigationActions
 } from "react-navigation";
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 import * as Keychain from "react-native-keychain";
 
 export default class Root extends React.Component {

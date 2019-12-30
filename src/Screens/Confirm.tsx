@@ -5,9 +5,9 @@ import {
 	Picker,
 	TouchableOpacity,
 	Text,
-	Alert,
-	AsyncStorage
+	Alert
 } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 import {
 	StackActions,
 	NavigationActions
