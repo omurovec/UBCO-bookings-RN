@@ -43,7 +43,7 @@ export default class Bookings extends React.Component {
 		this.navParams = this.props.navigation.state.params;
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		httpsFunction("fetchSchedule", {
 			time: this.navParams.time,
 			month: this.navParams.date.getMonth() + 1,

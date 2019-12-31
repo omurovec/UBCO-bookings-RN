@@ -36,9 +36,9 @@ export default class DateTime extends React.Component {
 	getDateString(date) {
 		const month = date.getMonth() + 1;
 		const day = date.getDate();
-		return `${date.getFullYear()}-${month < 10
-			? "0" + month
-			: month}-${day < 10 ? "0" + day : day}`;
+		return `${date.getFullYear()}-${
+			month < 10 ? "0" + month : month
+		}-${day < 10 ? "0" + day : day}`;
 	}
 
 	_renderTimes() {
@@ -86,9 +86,11 @@ export default class DateTime extends React.Component {
 							}
 						}}
 						current={() =>
-							this.getDateString(this.state.currDate)}
+							this.getDateString(this.state.currDate)
+						}
 						minDate={() =>
-							this.getDateString(this.state.currDate)}
+							this.getDateString(this.state.currDate)
+						}
 						onDayPress={day => {
 							this.state.selectedDate.setDate(day.day);
 							this.state.selectedDate.setMonth(
@@ -115,7 +117,8 @@ export default class DateTime extends React.Component {
 						this.props.navigation.navigate("Bookings", {
 							date: this.state.selectedDate,
 							time: this.state.selectedTime
-						})}
+						})
+					}
 				>
 					<Text style={Styles.buttonText}>
 						Check Available Bookings

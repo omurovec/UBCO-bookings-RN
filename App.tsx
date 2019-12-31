@@ -14,7 +14,7 @@ export default class Root extends React.Component {
 		super(props);
 	}
 
-	async componentWillMount() {
+	async componentDidMount() {
 		const novell = await Keychain.getGenericPassword();
 		const contact = await AsyncStorage.multiGet([
 			"email",

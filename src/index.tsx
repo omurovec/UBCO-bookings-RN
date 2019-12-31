@@ -113,7 +113,8 @@ const RootNavigator = createStackNavigator(
 				backgroundColor: "#002145"
 			},
 			headerTitleStyle: {
-				fontWeight: "200"
+				fontWeight: "200",
+				fontFamily: "roboto"
 			},
 			headerTintColor: "white"
 		}
