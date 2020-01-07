@@ -46,8 +46,8 @@ export default class Confirm extends React.Component {
 	}
 
 	async confirm() {
-		const email = AsyncStorage.getItem("email");
-		const phone = AsyncStorage.getItem("phone");
+		const email = await AsyncStorage.getItem("email");
+		const phone = await AsyncStorage.getItem("phone");
 		if (
 			this.state.description &&
 			this.state.title &&
