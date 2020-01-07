@@ -68,16 +68,13 @@ export default class Bookings extends React.Component {
 					fetching: false
 				});
 			})
-			.catch(err =>
-				this.setState({ slot: null, fetching: false })
-			);
+			.catch(err => {
+				this.setState({ fetching: false });
+			});
 	}
 
 	render() {
-		if (
-			this.state.slots.length > 0 &&
-			!this.state.fetching
-		) {
+		if (this.state.slots.length > 0) {
 			return (
 				<View style={Styles.container}>
 					<FlatList
