@@ -27,7 +27,7 @@ export default class Home extends React.Component {
 	componentDidMount() {
 		const today = new Date();
 		httpsFunction("getBooked", {
-			day: today.getDay(),
+			day: today.getDate(),
 			month: today.getMonth() + 1,
 			year: today.getFullYear()
 		})
