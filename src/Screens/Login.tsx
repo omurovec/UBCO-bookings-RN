@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-	View,
-	Image,
-	Text,
-	TextInput,
-	Alert
+    View,
+    Image,
+    Text,
+    TextInput,
+	  Alert
 } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import Styles from "../styles";
@@ -16,45 +16,28 @@ import {
 	NavigationActions
 } from "react-navigation";
 
-export default class Login extends React.Component {
-	state: {
-		phone?: string;
-		email?: string;
-		username?: string;
-		password?: string;
-	};
+export default function Login(props: {navigation : any}) {
+    const [username, setUsername] = useState(null);
+    const [password, setPassword] = useState(null);
+    const [phone, setPhone] = useState(null);
+    const [email, setEmail] = useState(null);
 
-	props: {
-		navigation: any;
-	};
-
-	constructor(props) {
-		super(props);
-		this.state = {
-			username: null,
-			password: null,
-			phone: null,
-			email: null
-		};
-		this._storeInfo = this._storeInfo.bind(this);
-	}
-
-	_storeInfo() {
-		console.log("USER: " + this.state.username);
-		console.log("PASS: " + this.state.password);
+  function storeInfo() {
+		console.log("USER: " + username);
+		console.log("PASS: " + password);
 		httpsFunction("testCredentials", {
-			username: this.state.username,
-			password: this.state.password
+			username: username,
+			password: password
 		})
 			.then(async () => {
 				try {
 					await Keychain.setGenericPassword(
-						this.state.username,
-						this.state.password
+						username,
+						password
 					);
 					await AsyncStorage.multiSet([
-						["email", this.state.email],
-						["phone", this.state.phone]
+						["email", email],
+						["phone", phone]
 					]);
 					this.props.navigation.dispatch(
 						StackActions.reset({
@@ -79,7 +62,8 @@ export default class Login extends React.Component {
 					);
 				}
 			})
-			.catch(() => {
+			.catch((err) => {
+          console.log(err)
 				Alert.alert(
 					"Invalid Novell Account",
 					"Please re-enter your username and pasword and try again",
@@ -87,10 +71,8 @@ export default class Login extends React.Component {
 						{
 							text: "dismiss",
 							onPress: () => {
-								this.setState({
-									username: null,
-									password: null
-								});
+								  setUsername(null),
+									setPassword(null);
 							}
 						}
 					]
@@ -98,80 +80,70 @@ export default class Login extends React.Component {
 			});
 	}
 
-	render() {
-		return (
-			<View style={Styles.loginContainer}>
-				<Image
-					source={require("../../assets/person.png")}
-					style={Styles.loginImage}
-				/>
-				<Text style={Styles.loginPrompt}>
-					Please enter your Novell Account and contact
-					information.
-				</Text>
-				<TextInput
-					placeholderTextColor="white"
-					style={Styles.loginInput}
-					placeholder="Email"
-					onChangeText={text => {
-						this.setState({ email: text });
-					}}
-				/>
-				<TextInput
-					placeholderTextColor="white"
-					style={Styles.loginInput}
-					placeholder="Phone"
-					onChangeText={text => {
-						this.setState({ phone: text });
-					}}
-				/>
-				<TextInput
-					placeholderTextColor="white"
-					style={Styles.loginInput}
-					placeholder="Student Number"
-					onChangeText={text => {
-						this.setState({ username: text });
-					}}
-				/>
-				<TextInput
-					placeholderTextColor="white"
-					style={Styles.loginInput}
-					placeholder="Birthdate DDMMYY"
-					secureTextEntry={true}
-					onChangeText={text => {
-						this.setState({ password: text });
-					}}
-				/>
+  return (
+    <View style={Styles.loginContainer}>
+      <Image
+        source={require("../../assets/person.png")}
+        style={Styles.loginImage}
+      />
+      <Text style={Styles.loginPrompt}>
+        Please enter your Novell Account and contact
+        information.
+      </Text>
+      <TextInput
+        placeholderTextColor="white"
+        style={Styles.loginInput}
+        placeholder="Email"
+        onChangeText={text => {setEmail(text)}}
+      />
+      <TextInput
+        placeholderTextColor="white"
+        style={Styles.loginInput}
+        placeholder="Phone"
+        onChangeText={text => {setPhone(text);}}
+      />
+      <TextInput
+        placeholderTextColor="white"
+        style={Styles.loginInput}
+        placeholder="Student Number"
+        onChangeText={text => {setUsername(text);}}
+      />
+      <TextInput
+        placeholderTextColor="white"
+        style={Styles.loginInput}
+        placeholder="Birthdate DDMMYY"
+        secureTextEntry={true}
+        onChangeText={text => {setPassword(text);}}
+      />
 
-				<RoundButton
-					visible={() =>
-						this.state.username &&
-						this.state.password &&
-						this.state.email &&
-						this.state.phone
-					}
-					onPress={this._storeInfo}
-					source={require("../../assets/next-arrow-128.png")}
-				/>
-			</View>
-		);
-	}
+      <RoundButton
+        visible={() =>
+          username &&
+          password &&
+          email &&
+          phone
+        }
+        onPress={storeInfo}
+        source={require("../../assets/next-arrow-128.png")}
+      />
+    </View>
+  );
 }
 
 const RoundButton = props => {
-	if (props.visible()) {
-		return (
-			<TouchableOpacity
-				style={Styles.loginButton}
-				onPress={props.onPress}
-			>
-				<Image
-					source={props.source}
-					style={Styles.loginButtonImage}
-				/>
-			</TouchableOpacity>
-		);
-	} else {
-		return <View style={Styles.loginButton} />;
-	}
+	  if (props.visible()) {
+		    return (
+			      <TouchableOpacity
+				        style={Styles.loginButton}
+				        onPress={props.onPress}
+			      >
+				        <Image
+					      source={props.source}
+					      style={Styles.loginButtonImage}
+				        />
+			      </TouchableOpacity>
+		    );
+	  } else {
+		    return <View style={Styles.loginButton} />;
+	  }
 };

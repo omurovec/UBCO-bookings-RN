@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
 	View,
 	Text,
@@ -12,71 +12,67 @@ import {
 	NavigationActions
 } from "react-navigation";
 
-export default class BookingInfo extends React.Component {
-	props: {
-		navigation: any;
-	};
-	navParams: {
-		id: string;
-		startTime: string;
-		title: string;
-		description: string;
-		roomName: string;
-		areaName: string;
-		date: string;
-	};
+export default (
+    props: {
+        navigation: {
+            state: {
+                params: {
+                    id: string;
+                    startTime: string;
+                    title: string;
+                    description: string;
+                    roomName: string;
+                    areaName: string;
+                    date: string;
+                }
+            }
+        }
+    }) => {
 
-	constructor(props) {
-		super(props);
-		this.navParams = this.props.navigation.state.params;
-		this.cancelBooking = this.cancelBooking.bind(this);
-	}
-
-	cancelBooking() {
-		httpsFunction("cancelSlot", {
-			id: this.navParams.id
-		})
-			.then(() =>
-				this.props.navigation.dispatch(
-					StackActions.reset({
-						index: 0,
-						actions: [
-							NavigationActions.navigate({
-								routeName: "Home"
-							})
-						]
-					})
-				)
-			)
-			.catch(() => {
-				Alert.alert(
-					"There was an error deleting your booking",
-					"Sorry about this, please notify Owen about this error",
-					[{ text: "dismiss" }]
-				);
-			});
-	}
-
-	render() {
-		return (
+    cancelBooking = () => {
+        httpsFunction("cancelSlot", {
+            id: props.navigation.state.id
+        })
+            .then(() =>
+                props.navigation.dispatch(
+                    StackActions.reset({
+                        index: 0,
+                        actions: [
+                            NavigationActions.navigate({
+                                routeName: "Home"
+                            })
+                        ]
+                    })
+                )
+            )
+            .catch(() => {
+                Alert.alert(
+                    "There was an error deleting your booking",
+                    "Sorry about this, please notify Owen about this error",
+                    [{ text: "dismiss" }]
+                );
+            });
+    }
+    
+    return (
 			<View style={Styles.container}>
 				<View style={Styles.bookingInfoHeader}>
 					<Text style={Styles.bookingInfoDate}>
-						{this.navParams.date}
+						{props.navigation.state.date}
 					</Text>
 					<Text style={Styles.bookingInfoTime}>
-						{this.navParams.startTime}
+						{props.navigation.state.startTime}
 					</Text>
 				</View>
 				<Text style={Styles.bookingInfoText}>
-					{this.navParams.areaName}
+					{props.navigation.state.areaName}
 				</Text>
 
 				<Text style={Styles.bookingInfoTitle}>
-					{this.navParams.title}
+					{props.navigation.state.title}
 				</Text>
 				<Text style={Styles.bookingInfoText}>
-					{this.navParams.description}
+					{props.navigation.state.description}
 				</Text>
 				<TouchableOpacity
 					style={{
@@ -107,5 +103,5 @@ export default class BookingInfo extends React.Component {
 				</TouchableOpacity>
 			</View>
 		);
-	}
 }
+

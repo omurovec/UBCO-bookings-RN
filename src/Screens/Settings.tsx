@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
 	View,
 	TouchableOpacity,
@@ -11,37 +11,29 @@ import Styles from "../styles";
 import * as Keychain from "react-native-keychain";
 import httpsFunction from "../Functions";
 
-export class Settings extends React.Component {
-	props: {
-		navigation: any;
-	};
-	constructor(props) {
-		super(props);
-	}
+export function Settings(props: { navigation: any }) {
+    function setNovell(credentials, reset) {
+		    const creds = {
+			      username: credentials[0],
+			      password: credentials[1]
+		    };
+		    httpsFunction("testCredentials", creds)
+			      .then(() =>
+				        Keychain.setGenericPassword(
+					          creds.username,
+					          creds.password
+				        ).then(reset())
+			      )
+			      .catch(err => {
+				        console.log(err);
+			      });
+	  }
 
-	_setNovell(credentials, reset) {
-		const creds = {
-			username: credentials[0],
-			password: credentials[1]
-		};
-		httpsFunction("testCredentials", creds)
-			.then(() =>
-				Keychain.setGenericPassword(
-					creds.username,
-					creds.password
-				).then(reset())
-			)
-			.catch(err => {
-				console.log(err);
-			});
-	}
-
-	render() {
-		return (
+    return (
 			<View style={Styles.container}>
 				<TouchableOpacity
 					onPress={() => {
-						this.props.navigation.navigate("EditSetting", {
+						props.navigation.navigate("EditSetting", {
 							title: "Email",
 							inputs: [
 								{
@@ -56,9 +48,9 @@ export class Settings extends React.Component {
 									placeHolder: "Email"
 								}
 							],
-							setValues: (email, reset) => {
-								AsyncStorage.setItem("email", email).then(
-									reset
+							setValues: (newEmail, reset) => {
+								AsyncStorage.setItem("email", newEmail[0]).then(
+									reset()
 								);
 							}
 						});
@@ -80,7 +72,7 @@ export class Settings extends React.Component {
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
-						this.props.navigation.navigate("EditSetting", {
+						props.navigation.navigate("EditSetting", {
 							title: "Phone",
 							inputs: [
 								{
@@ -95,9 +87,9 @@ export class Settings extends React.Component {
 									placeHolder: "Phone"
 								}
 							],
-							setValues: (phone, reset) => {
-								AsyncStorage.setItem("phone", phone).then(
-									reset
+							setValues: (newPhone, reset) => {
+								AsyncStorage.setItem("phone", newPhone[0]).then(
+									reset()
 								);
 							}
 						});
@@ -119,7 +111,7 @@ export class Settings extends React.Component {
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
-						this.props.navigation.navigate("EditSetting", {
+						props.navigation.navigate("EditSetting", {
 							title: "Novell",
 							inputs: [
 								{
@@ -133,7 +125,7 @@ export class Settings extends React.Component {
 									placeHolder: "Birthdate DDMMYY"
 								}
 							],
-							setValues: this._setNovell
+							setValues: setNovell
 						});
 					}}
 					style={Styles.settingsOptionContainer}
@@ -153,73 +145,51 @@ export class Settings extends React.Component {
 				</TouchableOpacity>
 			</View>
 		);
-	}
 }
 
-export class EditSetting extends React.Component {
-	props: {
-		navigation: any;
-	};
-	state: {
-		values: string[];
-	};
-	navParams: {
-		inputs: {
-			text: string;
-			hide: boolean;
-			placeHolder?: string;
-		}[];
-		setValues: Function;
-	};
+export function EditSetting(props) {
+    const [values, setValues] = useState([]);
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			values: []
-		};
-		this.navParams = {
-			...this.props.navigation.state.params
-		};
-	}
+    function renderInputs(data) {
+		    return data.map((item, index) => (
+			      <View
+				        key={index.toString()}
+				        style={Styles.settingsOptionContainer}
+			      >
+				        <TextInput
+					      style={Styles.editSettingsInput}
+					      placeholder={item.placeHolder}
+					      secureTextEntry={item.hide}
+					      onChangeText={text => {
+						        setValues(() => {
+                        let newValues = values;
+                        newValues[index] = text;
+                        return newValues
+                    })
+					      }}
+				        />
+			      </View>
+		    ));
+	  }
 
-	_renderInputs(data) {
-		return data.map((item, index) => (
-			<View
-				key={index.toString()}
-				style={Styles.settingsOptionContainer}
-			>
-				<TextInput
-					style={Styles.editSettingsInput}
-					placeholder={item.placeHolder}
-					secureTextEntry={item.hide}
-					onChangeText={text => {
-						this.state.values[index] = text;
-					}}
-				/>
-			</View>
-		));
-	}
-
-	render() {
-		return (
-			<View style={Styles.container}>
-				{this._renderInputs(this.navParams.inputs)}
-				<TouchableOpacity
-					style={{
-						...Styles.button,
-						width: "90%",
-						margin: 20
-					}}
-					onPress={() =>
-						this.navParams.setValues(
-							this.state.values,
-							this.props.navigation.goBack()
-						)
-					}
-				>
-					<Text style={Styles.buttonText}>Confirm</Text>
-				</TouchableOpacity>
-			</View>
+    return (
+			  <View style={Styles.container}>
+				    {renderInputs(props.navigation.state.params.inputs)}
+				    <TouchableOpacity
+					      style={{
+						        ...Styles.button,
+						        width: "90%",
+						        margin: 20
+					      }}
+					      onPress={() =>
+						        props.navigation.state.params.setValues(
+							          values,
+							          props.navigation.goBack()
+						        )
+					      }
+				    >
+					      <Text style={Styles.buttonText}>Confirm</Text>
+				    </TouchableOpacity>
+			  </View>
 		);
-	}
 }
