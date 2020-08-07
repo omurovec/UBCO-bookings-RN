@@ -5,6 +5,7 @@ const URL =
 
 export default async (path, params) => {
 	const creds = await Keychain.getGenericPassword();
+    console.log(params);
 	return fetch(URL + path, {
 		method: "POST",
 		mode: "cors",
@@ -19,6 +20,7 @@ export default async (path, params) => {
 	})
 		.then(resp => resp.json())
 		.then(respJson => {
+        console.log(respJson);
 			if (respJson.success) {
 				return respJson.data;
 			} else {
